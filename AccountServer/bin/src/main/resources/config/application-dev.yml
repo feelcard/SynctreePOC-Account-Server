@@ -1,0 +1,15 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/bankdb?characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    username: bank
+    password: bank
+    hikari:
+      maximum-pool-size: 200
+  hibernate: 
+    show_sql: true
+    dialect: org.hibernate.dialect.MySQL5Dialect
+    physical_naming_strategy: com.kbfg.framework.config.CustomPhysicalNamingStrategy

@@ -12,10 +12,12 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -52,10 +54,10 @@ public class DatabaseConfig {
   public DataSource dataSource() {
     BasicDataSource dataSource = new BasicDataSource();
     try {
-      dataSource.setDriverClassName(env.getProperty("spring.datasource.driver-class-name"));
-      dataSource.setUrl(env.getProperty("spring.datasource.url"));
-      dataSource.setUsername(env.getProperty("spring.datasource.username"));
-      dataSource.setPassword(env.getProperty("spring.datasource.password"));
+      dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver"); //env.getProperty("spring.datasource.driver-class-name")
+      dataSource.setUrl("jdbc:mysql://localhost:3306/bankdb?characterEncoding=UTF-8&serverTimezone=Asia/Seoul"); //env.getProperty("spring.datasource.url")
+      dataSource.setUsername("bank");//env.getProperty("spring.datasource.username")
+      dataSource.setPassword("bank");//env.getProperty("spring.datasource.password")
     } catch (Exception e) {
       logger.info("error" + env.getProperty("spring.datasource.driver-class-name"));
     }
@@ -63,10 +65,10 @@ public class DatabaseConfig {
     return dataSource;
   }
 
-  @Bean
-  public DataSourceTransactionManager dataSourcetransactionManager() {
-    return new DataSourceTransactionManager(dataSource());
-  }
+//  @Bean
+//  public DataSourceTransactionManager dataSourcetransactionManager() {
+//    return new DataSourceTransactionManager(dataSource());
+//  }
 
   /*
    * Mybatis 설정
@@ -82,7 +84,7 @@ public class DatabaseConfig {
   
   /*
    * JPA Hibernate 설정
-   
+    */
   @Bean
   public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
 
@@ -97,7 +99,7 @@ public class DatabaseConfig {
 
     em.setDataSource(dataSource());
 
-    em.setPackagesToScan(new String[] {"com.kbds"});
+    em.setPackagesToScan(new String[] {"com.kbfg"});
 
     JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
 
@@ -105,10 +107,10 @@ public class DatabaseConfig {
 
     Properties props = new Properties();
 
-    //props.put("hibernate.show_sql", env.getProperty("spring.hibernate.show_sql"));
+    props.put("hibernate.show_sql", "true");//env.getProperty("spring.hibernate.show_sql")
 
-    //props.put("hibernate.physical_naming_strategy",
-    //    env.getProperty("spring.hibernate.physical_naming_strategy"));
+    props.put("hibernate.physical_naming_strategy",
+       "com.kbfg.framework.config.CustomPhysicalNamingStrategy");//env.getProperty("spring.hibernate.physical_naming_strategy")
     props.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 
     em.setJpaProperties(props);
@@ -118,7 +120,7 @@ public class DatabaseConfig {
   }
 
   @Bean
-  public PlatformTransactionManager platformTransactionManager() {
+  public PlatformTransactionManager transactionManager() {
 
     JpaTransactionManager transactionManager = new JpaTransactionManager();
 
@@ -127,5 +129,5 @@ public class DatabaseConfig {
     return transactionManager;
 
   }
-  */
+ 
 }
